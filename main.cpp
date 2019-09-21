@@ -11,8 +11,8 @@ using Matrix = vector<vector<bool>>;
 
 enum class TravelType
 {
-    depth,
-    breadth
+    depth,  // обход в глубину
+    breadth // обход в ширину
 };
 
 bool contains(const vector<int>& vec, int val)
@@ -23,17 +23,16 @@ bool contains(const vector<int>& vec, int val)
     return false;
 }
 
-void bf(Matrix matrix, int vertex, TravelType type)
+void travel(Matrix matrix, int vertex, TravelType type)
 {
     vector<int> used(1, vertex);
     vector<int> container;
-    auto getVertex = type == TravelType::depth ? 
+    auto getVertex = type == TravelType::breadth ? 
         [] (vector<int>& container) {
             int vrtx = container.front();
             container.erase(container.begin());
             return vrtx;}
-                                               : 
-        [] (vector<int>& container) {
+       :[] (vector<int>& container) {
             int vertex = container.back();
             container.pop_back();
             return vertex;};
@@ -66,7 +65,7 @@ int main()
                             { 1, 0, 0, 1, 0 },
                             { 1, 0, 1, 0, 0 },
                             { 1, 1, 0, 0, 0 } };
-    bf(vertex_matrix, 1, TravelType::breadth);
-    bf(vertex_matrix, 1, TravelType::depth);
+    travel(vertex_matrix, 1, TravelType::breadth);
+    travel(vertex_matrix, 1, TravelType::depth);
     return 0;
 }
