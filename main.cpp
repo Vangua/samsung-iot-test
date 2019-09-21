@@ -17,6 +17,7 @@ bool contains(const vector<int>& vec, int val)
     return false;
 }
 
+// обход в ширину
 void bf(bool matrix[SIZE][SIZE], int vertex)
 {
     vector<int> used(1, vertex);
@@ -47,6 +48,36 @@ void bf(bool matrix[SIZE][SIZE], int vertex)
 
 }
 
+// обход в глубину
+void df(bool matrix[SIZE][SIZE], int vertex)
+{
+    vector<int> used(1, vertex);
+    vector<int> stack;
+
+    for (int i = 0; i < SIZE; ++i)
+        if (matrix[vertex][i])
+            stack.push_back(i);
+
+    while (stack.size())
+    {
+        vertex = stack.back();
+        stack.pop_back();
+        
+        if ( contains(used, vertex) )
+            continue;
+        
+        for (int i = 0; i < SIZE; ++i)
+            if (matrix[vertex][i] and !contains(used, vertex))
+                stack.push_back(i);
+        
+        used.push_back(vertex);
+    }
+
+    for (auto item : used)
+        cout << item << " ";
+    cout << endl;
+}
+
 int main()
 {
     bool vertex_matrix [SIZE][SIZE] = { 0, 1, 1, 1, 1,
@@ -55,6 +86,7 @@ int main()
                                         1, 0, 1, 0, 0,
                                         1, 1, 0, 0, 0 };
     bf(vertex_matrix, 1);
+    df(vertex_matrix, 1);
     return 0;
 }
 
