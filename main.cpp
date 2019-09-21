@@ -3,11 +3,11 @@
 #include <iostream>
 #include <vector>
 
-#define SIZE 5
-
 using std::cout;
 using std::endl;
 using std::vector;
+
+using Matrix = vector<vector<bool>>;
 
 enum class TravelType
 {
@@ -23,19 +23,22 @@ bool contains(const vector<int>& vec, int val)
     return false;
 }
 
-void bf(bool matrix[SIZE][SIZE], int vertex, TravelType type)
+void bf(Matrix matrix, int vertex, TravelType type)
 {
     vector<int> used(1, vertex);
     vector<int> container;
-    auto getVertex = type == TravelType::depth ? [](vector<int>& container){
-                                                 int vrtx = container.front();
-                                                 container.erase(container.begin());
-                                                 return vrtx;}
-                                               : [](vector<int>& container){
-                                                 int vertex = container.back();
-                                                 container.pop_back();
-                                                 return vertex;};
-    for (int i = 0; i < SIZE; ++i)
+    auto getVertex = type == TravelType::depth ? 
+        [] (vector<int>& container) {
+            int vrtx = container.front();
+            container.erase(container.begin());
+            return vrtx;}
+                                               : 
+        [] (vector<int>& container) {
+            int vertex = container.back();
+            container.pop_back();
+            return vertex;};
+
+    for (int i = 0; i < matrix.size(); ++i)
         if (matrix[vertex][i])
             container.push_back(i);
 
@@ -45,7 +48,7 @@ void bf(bool matrix[SIZE][SIZE], int vertex, TravelType type)
         if ( contains(used, vertex) )
             continue;
 
-        for (int i = 0; i < SIZE; ++i)
+        for (int i = 0; i < matrix.size(); ++i)
             if (matrix[vertex][i] and !contains(used, i))
                 container.push_back(i);
         used.push_back(vertex);
@@ -58,11 +61,11 @@ void bf(bool matrix[SIZE][SIZE], int vertex, TravelType type)
 
 int main()
 {
-    bool vertex_matrix [SIZE][SIZE] = { 0, 1, 1, 1, 1,
-                                        1, 0, 0, 0, 1,
-                                        1, 0, 0, 1, 0,
-                                        1, 0, 1, 0, 0,
-                                        1, 1, 0, 0, 0 };
+    Matrix vertex_matrix = {{ 0, 1, 1, 1, 1 },
+                            { 1, 0, 0, 0, 1 },
+                            { 1, 0, 0, 1, 0 },
+                            { 1, 0, 1, 0, 0 },
+                            { 1, 1, 0, 0, 0 } };
     bf(vertex_matrix, 1, TravelType::breadth);
     bf(vertex_matrix, 1, TravelType::depth);
     return 0;
